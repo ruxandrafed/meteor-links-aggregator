@@ -1,0 +1,9 @@
+#login-buttons {
+  float: right;
+  padding: 20px 0;
+}
+
+#login-dropdown-list {
+  top: 45px;
+  left: -180px;
+}
