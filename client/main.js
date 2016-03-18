@@ -98,6 +98,11 @@ Template.website_item.events({
 Template.website_form.events({
   "click .js-toggle-website-form":function(event){
     $("#website_form").toggle('slow');
+    $("#add_site_button").html(function(i, html){
+      return html.indexOf('plus') !== -1
+      ? '<span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Cancel'
+      : '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add a website';
+    })
   },
   "submit .js-save-website-form":function(event){
     var url = event.target.url.value;
@@ -125,6 +130,11 @@ Template.website_form.events({
 Template.comment_form.events({
   "click .js-toggle-comment-form":function(event){
     $("#comment_form").toggle('slow');
+    $("#add_comment_button").html(function(i, html){
+      return html.indexOf('plus') !== -1
+      ? '<span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Cancel'
+      : '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add a comment';
+    });
   },
   "submit .js-save-comment-form":function(event){
     var comment = event.target.comment.value;

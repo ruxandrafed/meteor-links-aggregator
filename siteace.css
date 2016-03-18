@@ -2,3 +2,40 @@
 .hidden_div{
 	display:none;
 }
+
+.site-title {
+  font-weight: bold;
+}
+
+.site-url {
+  color: gray;
+}
+
+.site-description {
+  margin-top: 10px;
+}
+
+.site-add-date {
+  float: right;
+}
+
+#website_form {
+  margin-top: 10px;
+}
+
+#comment_list {
+  margin-top: 10px;
+}
+
+#add_comment_button {
+  float: right;
+}
+
+#comment_form {
+  margin-top: 30px;
+  margin-bottom: 10px;
+}
+
+#comment_form label {
+  margin-bottom: 10px;
+}

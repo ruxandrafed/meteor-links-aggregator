@@ -16,7 +16,7 @@
   <nav class="navbar navbar-default">
     <div class="container-fluid">
       <div class="navbar-header">
-        <a class="navbar-brand" href="#">
+        <a class="navbar-brand" href="/">
           Site Ace
         </a>
       </div>
@@ -28,8 +28,9 @@
 <template name="website_form">
   <div class="container">
     {{#if currentUser}}
-    <a class="btn btn-default js-toggle-website-form" href="#">
+    <a class="btn btn-default js-toggle-website-form" id="add_site_button" href="#">
         <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+        Add a website
     </a>
     {{/if}}
     <div id="website_form" class="hidden_div">
@@ -46,38 +47,32 @@
           <label for="description">Description</label>
           <input type="text" class="form-control" id="description" placeholder="I found this site really useful for ...">
         </div>
-
         <button type="submit" class="btn btn-default">Submit</button>
       </form>
     </div>
+    <hr>
   </div>
 </template>
 
 <!-- template that displays several website items -->
 <template name="website_list">
-
   {{> website_form}}
-
-  <div class="container">
-    <ol>
-    {{#each websites}}
-    {{>website_item}}
-    {{/each}}
-    </ol>
-  </div>
+  {{#each websites}}
+  {{>website_item}}
+  {{/each}}
 </template>
 
 <!-- template that displays individual website entries -->
 <template name="website_item">
+  <br>
   <div class="container">
-    <li>
-      <a href="{{url}}">{{title}}</a>
-      <a href="/website/{{_id}}"> (details)</a>
-      <p>
-        {{description}}
+      <p class="site-add-date">
+        {{date createdOn}}
       </p>
-      <p>
-        Added on: {{date createdOn}}
+      <a class="site-title" href="/website/{{_id}}">{{title}}</a>
+      <a class="site-url" href="{{url}}"> (visit site)</a>
+      <p class="site-description">
+        {{description}}
       </p>
       <a href="#" class="btn btn-default js-upvote">
         <span style="margin-right: 10px; color: green;">{{#if rating}} {{rating}} {{else}} 0 {{/if}}</span><span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span>
@@ -86,7 +81,6 @@
         <span style="margin-right: 10px; color: red;">{{#if negRating}} -{{negRating}} {{else}} 0 {{/if}}</span><span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span>
       </a>
       <!-- you will be putting your up and down vote buttons in here! -->
-    </li>
   </div>
 </template>
 
@@ -94,8 +88,9 @@
   <hr>
   <div class="container">
     {{#if currentUser}}
-    <a class="btn btn-default js-toggle-comment-form" href="#">
+    <a class="btn btn-default js-toggle-comment-form" id="add_comment_button" href="#">
         <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+        Add a comment
     </a>
     {{/if}}
     <div id="comment_form" class="hidden_div">
@@ -113,7 +108,7 @@
 
 <template name="comment_item">
   {{#if commentBelongsToPost post_id}}
-  <div class="container" id="{{_id}}">
+  <div id="{{_id}}">
     <p><span style="font-weight: bold">{{ commentAuthor addedBy }}</span>: {{ comment }}
     {{#if commentBelongsToAuthor addedBy}}
     <a class="js-remove-comment" href="#">(remove)</a>
@@ -127,11 +122,11 @@
 
   {{> comment_form}}
 
-  <div class="container">
-    <ol>
+  {{#if comments}}
+  <div class="container" id="comment_list">
     {{#each comments}}
     {{>comment_item}}
     {{/each}}
-    </ol>
   </div>
+  {{/if}}
 </template>
