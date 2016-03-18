@@ -121,6 +121,7 @@ Template.website_form.events({
     }
 
     $("#website_form").toggle('slow');
+    $("#add_site_button").html('<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add a website');
 
     return false;
 
@@ -150,6 +151,7 @@ Template.comment_form.events({
     }
 
     $("#comment_form").toggle('slow');
+    $("#add_comment_button").html('<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add a comment');
 
     return false;
 
