@@ -1,4 +1,36 @@
 /////
+// routes
+////
+
+Router.configure({
+  layoutTemplate: 'ApplicationLayout'
+});
+
+Router.route('/', function () {
+  this.render('navbar', {
+    to: 'navbar'
+  });
+  this.render('website_list', {
+    to: 'main'
+  });
+});
+
+Router.route('website/:_id', function () {
+  this.render('navbar', {
+    to: 'navbar'
+  });
+  this.render('website_item', {
+    to: 'main',
+    data: function () {
+      return Websites.findOne({_id: this.params._id});
+    }
+  });
+  this.render('comment_list', {
+    to: 'secondary'
+  });
+})
+
+/////
 // accounts config
 ////
 
@@ -13,10 +45,37 @@ Accounts.ui.config({
 // helper function that returns all available websites
 Template.website_list.helpers({
   websites:function(){
-    return Websites.find({});
+    return Websites.find({}, {sort: {rating:-1}});
   }
 });
 
+Template.website_item.helpers({
+  date:function(full_date){
+    return full_date.toLocaleDateString("en-US");
+  }
+});
+
+Template.comment_list.helpers({
+  comments:function(){
+    return Comments.find({});
+  }
+});
+
+Template.comment_item.helpers({
+  commentAuthor:function(user_id){
+    return Meteor.users.findOne({_id: user_id}).username;
+  },
+  commentBelongsToPost:function(post_id){
+    return (Router.current().params._id === post_id)
+  },
+  commentBelongsToAuthor:function(user_id){
+    if (Meteor.userId() === user_id) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+});
 
 /////
 // template events
@@ -24,24 +83,15 @@ Template.website_list.helpers({
 
 Template.website_item.events({
   "click .js-upvote":function(event){
-    // example of how you can access the id for the website in the database
-    // (this is the data context for the template)
     var website_id = this._id;
-    console.log("Up voting website with id "+website_id);
-    // put the code in here to add a vote to a website!
-
-    return false;// prevent the button from reloading the page
+    Websites.update({_id: website_id }, { $inc: {rating: + 1 }});
+    return false;
   },
   "click .js-downvote":function(event){
-
-    // example of how you can access the id for the website in the database
-    // (this is the data context for the template)
     var website_id = this._id;
+    Websites.update({_id: website_id }, { $inc: {negRating: + 1 }});
     console.log("Down voting website with id "+website_id);
-
-    // put the code in here to remove a vote from a website!
-
-    return false;// prevent the button from reloading the page
+    return false;
   }
 })
 
@@ -50,14 +100,57 @@ Template.website_form.events({
     $("#website_form").toggle('slow');
   },
   "submit .js-save-website-form":function(event){
-
-    // here is an example of how to get the url out of the form:
     var url = event.target.url.value;
+    var title = event.target.title.value;
+    var description = event.target.description.value;
     console.log("The url they entered is: "+url);
 
-    //  put your website saving code in here!
+    if (Meteor.user()) {
+      Websites.insert({
+        url: url,
+        title: title,
+        description: description,
+        createdOn: new Date(),
+        addedBy: Meteor.user()._id
+      });
+    }
 
-    return false;// stop the form submit from reloading the page
+    $("#website_form").toggle('slow');
 
+    return false;
+
+  }
+});
+
+Template.comment_form.events({
+  "click .js-toggle-comment-form":function(event){
+    $("#comment_form").toggle('slow');
+  },
+  "submit .js-save-comment-form":function(event){
+    var comment = event.target.comment.value;
+    console.log("The comment they entered is: "+comment);
+
+    if (Meteor.user()) {
+      Comments.insert({
+        comment: comment,
+        post_id: Router.current().params._id,
+        createdOn: new Date(),
+        addedBy: Meteor.user()._id
+      });
+    }
+
+    $("#comment_form").toggle('slow');
+
+    return false;
+
+  }
+});
+
+Template.comment_item.events({
+  "click .js-remove-comment":function(event){
+    var comment_id = this._id;
+    $("#"+comment_id).hide('slow', function () {
+      Comments.remove({_id: comment_id});
+    })
   }
 });
