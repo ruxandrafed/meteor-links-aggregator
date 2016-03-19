@@ -13,6 +13,9 @@ Router.route('/', function () {
   this.render('website_list', {
     to: 'main'
   });
+  this.render('footer', {
+    to: 'footer'
+  });
 });
 
 Router.route('website/:_id', function () {
@@ -105,20 +108,10 @@ Template.website_form.events({
     })
   },
   "submit .js-save-website-form":function(event){
-    var url = event.target.url.value;
-    var title = event.target.title.value;
-    var description = event.target.description.value;
-    console.log("The url they entered is: "+url);
 
-    if (Meteor.user()) {
-      Websites.insert({
-        url: url,
-        title: title,
-        description: description,
-        createdOn: new Date(),
-        addedBy: Meteor.user()._id
-      });
-    }
+    var url = event.target.url.value;
+    Meteor.call("getWebData", url);
+    event.target.url.value = '';
 
     $("#website_form").toggle('slow');
     $("#add_site_button").html('<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add a website');
