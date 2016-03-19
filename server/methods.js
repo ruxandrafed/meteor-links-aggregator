@@ -1,4 +1,4 @@
-var cheerio = Npm.require('cheerio');
+var cheerio = Meteor.npmRequire('cheerio');
 
 Meteor.methods({
   getWebData: function(url) {
